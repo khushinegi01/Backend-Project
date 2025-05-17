@@ -6,6 +6,7 @@ const connectDB = async ()=>{
     }
     catch(error) {
         console.log("Error in connecting" , error)
+        process.exit(1) //method instructs Node.js to terminate the process synchronously with an exit status of code
     }
 }
 export default connectDB;
