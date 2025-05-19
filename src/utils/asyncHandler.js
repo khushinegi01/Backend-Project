@@ -2,9 +2,9 @@
 
 
 // This is the function with Promise to handle the flow
-const asyncHandler = (requestHandler)=> { (res,req,next)=>{
-    Promise.resolve(requestHandler())
-    .catch((err)=> next(err))
+const asyncHandler = (requestHandler)=> {
+    return async (req,res,next)=>{
+     Promise.resolve(requestHandler(req ,res, next)).catch((err)=> next(err))
 }}
 
 export { asyncHandler }
