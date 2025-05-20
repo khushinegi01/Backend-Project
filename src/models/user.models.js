@@ -36,7 +36,8 @@ const userSchema = new Schema({
     },
     password : {
         // we will use bcrypt here.
-
+        type : String,
+        required : ["true" , "Password is required."],
     },
     refreshToken : {
         type : String,
