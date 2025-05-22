@@ -13,9 +13,12 @@ import fs from "fs"
     const uploadToCloudinary = async (localFilePath)=>{
         try {
             if(!localFilePath) return null
-            const response = await cloudinary.uploader.upload(localFilePath)
-            console.log("Cloudinary :: response :: ", response)
-            console.log("File upload to cloudinary :: File url ::" , response.url)
+            const response = await cloudinary.uploader.upload(localFilePath,{
+                resource_type : "auto"
+            })
+            // console.log("Cloudinary :: response :: ", response)
+            // console.log("File upload to cloudinary :: File url ::" , response.url)
+            fs.unlinkSync(localFilePath)  // this will delete the temporary stored file 
             return response
         }
         catch(error) {
