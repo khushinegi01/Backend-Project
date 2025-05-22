@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs"
-(async function() {
+
 
     // Configuration
     cloudinary.config({ 
@@ -14,6 +14,7 @@ import fs from "fs"
         try {
             if(!localFilePath) return null
             const response = await cloudinary.uploader.upload(localFilePath)
+            console.log("Cloudinary :: response :: ", response)
             console.log("File upload to cloudinary :: File url ::" , response.url)
             return response
         }
@@ -22,4 +23,5 @@ import fs from "fs"
             console.log("Error occured during upload :: ", error)
         }
     }  
-})();
+
+export {uploadToCloudinary }

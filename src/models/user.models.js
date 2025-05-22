@@ -49,11 +49,11 @@ const userSchema = new Schema({
     }]
 },{timestamps : true})
 
-// npm pre hook has been used to encrypt the password on momdification before saving user.
+// npm pre hook has been used to encrypt the password on modification before saving user.
 userSchema.pre("save" , async function (next){
-    if(!this.password.isModified) return next 
+    if(!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password,10)
+    this.password = bcrypt.hash(this.password , 10)
     next()
 })
 
