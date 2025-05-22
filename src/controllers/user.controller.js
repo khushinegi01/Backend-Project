@@ -39,14 +39,14 @@ const registerUser = asyncHandler(async (req ,res)=>{
             throw new ApiError(409 , "User name or email already exists.")
         }
         // for checking if the avatar field
-        console.log(req.file)
+        console.log(req.files)
         let avatarLocalPath = req.files?.avatar[0]?.path
         console.log(avatarLocalPath)
         let coverImageLocalPath = ""; 
-        if(!req.files ){
+        if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0 ){
             coverImageLocalPath = req.files?.coverImage[0]?.path
         } 
-        console.log(coverImageLocalPath)
+        console.log("coverImage :: ",coverImageLocalPath)
 
 
         if(!avatarLocalPath){
@@ -71,7 +71,7 @@ const registerUser = asyncHandler(async (req ,res)=>{
         })
 
         // just to make sure the user is created
-        const createdUser = User.findById(user._id).select(
+        const createdUser = await User.findById(user._id).select(
             "-password -refreshToken" // mention the field that you don't want.
         )
 
