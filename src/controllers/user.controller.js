@@ -86,4 +86,85 @@ const registerUser = asyncHandler(async (req ,res)=>{
 
 })
 
-export { registerUser }
+const generateRefreshTokenAndAccessToken = async function(userId){
+    try {
+        const user = User.findById(userId)
+        const accessToken = await user.generateAccessToken() // called the method from the user model
+        const refreshToken = await user.generateRefreshToken() // called the method from the user model
+
+       user.refreshToken = refreshToken;
+       await user.save({ validateBeforeSave: false });
+
+        return {accessToken , refreshToken}
+    }
+    catch(error) {
+        throw new ApiError(500 , "Something Went Wrong in Logging In User")
+    }
+
+}
+
+const loginUser = asyncHandler(async (req ,res)=>{
+    /*
+        Steps to login the user 
+        - get the credentials from the users
+        - check if credentail is empty
+        - check the password
+        - check the credentials from mongo using User class.
+        - generate the tokens and save to db.
+        - error handling with ApiError and response through ApiResponse.
+    */
+   const [username, email , password] = req.body
+
+   if(!username || !email){
+        throw new ApiError(401 , "Username and Email is Required.")
+   }
+
+   const user = await User.findOne({
+    $or:
+    [{username},{email}]
+   })
+
+   if(!user){
+    throw new ApiError(401 , "Invalid User Credentials.")
+   }
+   // called the method from the user model (isPasswordCorrect)
+   const isPasswordValid = await user.isPasswordCorrect(password) // return true and false:
+
+   if(!isPasswordValid){
+        throw new ApiError(401 , "Invalid Password.")
+   }
+
+   const [ accessToken , refreshToken ] = await generateRefreshTokenAndAccessToken(user._id)  // called the function to generate the accessToken and refreshToken 
+
+   // creating options for the cookies
+   const options = {
+        httpOnly : true,
+        secure : true
+   }
+
+   /* removed the password and refreshToken from the user data. This can be done in 2 ways:
+        1.) edit the user we fetched before if db call is expensive.
+        2.) make another call to db for fetching the data again.
+   */
+   const loggedUser = User.findById(user._id).select(
+    "-password -refreshToken"
+   )
+
+   res
+   .status(200)
+   .cookie("accessToken" , accessToken , options)
+   .cookie("refreshToken" , refreshToken , options)
+   .json(
+    new ApiResponse(
+        200,
+        {
+            accessToken ,refreshToken , loggedUser
+        }
+    )
+   )
+})
+
+export {
+     registerUser,
+     loginUser 
+    }
