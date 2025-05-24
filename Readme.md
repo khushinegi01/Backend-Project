@@ -143,7 +143,7 @@ backend with javascript.
 ## **Controller Logic :**
 
 -**User Controller** :
-* Registration :-
+* Register User :-
   1. Get data fields (username , fullname , email , password , avatar , coverImage[optional] ) from the frontend in form-data.
   2. Validate the fields if any required field is empty. Used modern javascript function some() to check the data fields dynamically.
   3. Check if user already exits in db with same email and username.
@@ -177,3 +177,11 @@ backend with javascript.
   9. Check if the user is created in the db using `findById` and remove the fields like `password` and `-refreshToken`.
   10. Error handling is done in the standardized  manner using utils class like `ApiError`.
   11. Send the response is user is created successfully through `ApiResponse`.
+
+* Login User:-
+    1. Get the credentials from the users.
+    2. Check if credentails is empty .
+    3. Check the password.
+    4. Check the credentials from mongo using User class.
+    5. Generate the tokens and save to db.
+    6. Error handling with ApiError and response through ApiResponse.
