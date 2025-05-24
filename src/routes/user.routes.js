@@ -1,6 +1,7 @@
-import {loginUser, registerUser} from "../controllers/user.controller.js"
+import { loginUser, logoutUser, registerUser} from "../controllers/user.controller.js"
 import { Router } from "express"
 import { upload } from "../middlewares/multer.middleware.js"
+import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 const routes = Router()
 
@@ -17,8 +18,9 @@ routes.route("/register").post(
     registerUser
 )
 
-routes.route("/login").post(
-    loginUser
-)
+routes.route("/login").post(loginUser)
+
+// injected our custom middleware (verifyJWT) before logoutUser
+routes.route("/logout").post( verifyJWT , logoutUser)
 
 export default routes

@@ -4,6 +4,22 @@ import { User } from "../models/user.models.js"
 import { uploadToCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponseHandler.js"
 
+const generateRefreshTokenAndAccessToken = async function(userId){
+    try {
+        const user = await User.findById(userId)
+        const accessToken = await user.generateAccessToken() // called the method from the user model
+        const refreshToken = await user.generateRefreshToken() // called the method from the user model
+
+       user.refreshToken = refreshToken;
+       await user.save({ validateBeforeSave: false });
+       return {accessToken , refreshToken}
+    }
+    catch(error) {
+        throw new ApiError(500 , "Something Went Wrong in Logging In User :: ")
+    }
+
+}
+
 const registerUser = asyncHandler(async (req ,res)=>{
         /* Steps to register user :
 
@@ -20,8 +36,6 @@ const registerUser = asyncHandler(async (req ,res)=>{
 
         */
         const { username , email , fullname ,  password } = req.body;
-        console.log(req.body)
-
         // for checking the user reqired fields not empty
         if(
             [username , email , fullname , password].some((field)=> field?.trim() === "")
@@ -39,14 +53,11 @@ const registerUser = asyncHandler(async (req ,res)=>{
             throw new ApiError(409 , "User name or email already exists.")
         }
         // for checking if the avatar field
-        console.log(req.files)
         let avatarLocalPath = req.files?.avatar[0]?.path
-        console.log(avatarLocalPath)
         let coverImageLocalPath = ""; 
         if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0 ){
             coverImageLocalPath = req.files?.coverImage[0]?.path
         } 
-        console.log("coverImage :: ",coverImageLocalPath)
 
 
         if(!avatarLocalPath){
@@ -57,7 +68,6 @@ const registerUser = asyncHandler(async (req ,res)=>{
         let coverImage = await uploadToCloudinary(coverImageLocalPath)
         
         if(!avatar){
-            console.log(avatar)
             return new ApiError(400 , "Avatar is required.")
         }
 
@@ -86,23 +96,6 @@ const registerUser = asyncHandler(async (req ,res)=>{
 
 })
 
-const generateRefreshTokenAndAccessToken = async function(userId){
-    try {
-        const user = User.findById(userId)
-        const accessToken = await user.generateAccessToken() // called the method from the user model
-        const refreshToken = await user.generateRefreshToken() // called the method from the user model
-
-       user.refreshToken = refreshToken;
-       await user.save({ validateBeforeSave: false });
-
-        return {accessToken , refreshToken}
-    }
-    catch(error) {
-        throw new ApiError(500 , "Something Went Wrong in Logging In User")
-    }
-
-}
-
 const loginUser = asyncHandler(async (req ,res)=>{
     /*
         Steps to login the user 
@@ -113,10 +106,9 @@ const loginUser = asyncHandler(async (req ,res)=>{
         - generate the tokens and save to db.
         - error handling with ApiError and response through ApiResponse.
     */
-   const [username, email , password] = req.body
-
+   const { username, email , password } = req.body
    if(!username || !email){
-        throw new ApiError(401 , "Username and Email is Required.")
+        throw new ApiError(401 , "Username or Email is Required.")
    }
 
    const user = await User.findOne({
@@ -133,8 +125,7 @@ const loginUser = asyncHandler(async (req ,res)=>{
    if(!isPasswordValid){
         throw new ApiError(401 , "Invalid Password.")
    }
-
-   const [ accessToken , refreshToken ] = await generateRefreshTokenAndAccessToken(user._id)  // called the function to generate the accessToken and refreshToken 
+   const  {accessToken , refreshToken} = await generateRefreshTokenAndAccessToken(user._id)  // called the function to generate the accessToken and refreshToken 
 
    // creating options for the cookies
    const options = {
@@ -146,7 +137,7 @@ const loginUser = asyncHandler(async (req ,res)=>{
         1.) edit the user we fetched before if db call is expensive.
         2.) make another call to db for fetching the data again.
    */
-   const loggedUser = User.findById(user._id).select(
+   const loggedUser = await User.findById(user._id).select(
     "-password -refreshToken"
    )
 
@@ -159,12 +150,42 @@ const loginUser = asyncHandler(async (req ,res)=>{
         200,
         {
             accessToken ,refreshToken , loggedUser
-        }
+        },
+        "User Logged In Successful."
     )
    )
 })
 
+
+const logoutUser = asyncHandler(async (req , res)=>{
+
+   await User.findByIdAndUpdate(
+    req.user._id,
+    { refreshToken: null }, // don't use undefined it is ignored by the mongodb and value is not updated
+    { new: true }
+)
+
+   // creating options for the cookies
+   const options = {
+        httpOnly : true,
+        secure : true
+   }
+
+   res
+   .status(200)
+   .clearCookie("accessToken" ,options)
+   .clearCookie("refreshToken" , options)
+   .json(
+    new ApiResponse(
+        200,
+        "User Logout Successful."
+    )
+   )
+})
+
+
 export {
      registerUser,
-     loginUser 
+     loginUser,
+     logoutUser 
     }
