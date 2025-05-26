@@ -1,4 +1,4 @@
-import { loginUser, logoutUser, registerUser} from "../controllers/user.controller.js"
+import { loginUser, logoutUser, registerUser ,refreshAccessToken} from "../controllers/user.controller.js"
 import { Router } from "express"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
@@ -20,7 +20,8 @@ routes.route("/register").post(
 
 routes.route("/login").post(loginUser)
 
-// injected our custom middleware (verifyJWT) before logoutUser
-routes.route("/logout").post( verifyJWT , logoutUser)
+//secured routes
+routes.route("/logout").post( verifyJWT , logoutUser) // injected our custom middleware (verifyJWT) before logoutUser
+routes.route("/refresh-token").post(refreshAccessToken)
 
 export default routes
