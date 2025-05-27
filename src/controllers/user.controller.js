@@ -236,10 +236,8 @@ const refreshAccessToken = asyncHandler(async(req ,res)=>{
 
 const changeCurrentPassword = asyncHandler(async (req ,res)=>{
     const {currentPassword , newPassword} = req.body
-
-    const user = await User.findById(res.user?.id)
+    const user = await User.findById(req.user?._id)
     const isPasswordCorrect = await user.isPasswordCorrect(currentPassword)
-
     if(!isPasswordCorrect){
         throw new ApiError(400 , "Invalid Password.")
     }
@@ -262,6 +260,7 @@ const changeCurrentPassword = asyncHandler(async (req ,res)=>{
 
 // since the login user is aldready existing in the req object we can fetch that for there.
 const getCurrentUser = asyncHandler(async (req, res)=>{
+    console.log("User :: ", req.user)
     return res.status(200)
     .json(
         new ApiResponse(
@@ -291,7 +290,7 @@ const updateUserDetails = asyncHandler(async (req, res)=>{
             }
         },
         {new : true}
-    ).select("-password")
+    ).select("-password -refreshToken")
 
     res
     .status(200)
@@ -310,21 +309,21 @@ const updateUserAvatar = asyncHandler(async (req, res)=>{
     if(!avatarLocalPath){
         throw new ApiError(400 , "Avatar File Is Missing.")
     }
-    const avatar = await uploadToCloudinary(avatarLocalPath)
-
+    let avatar = await uploadToCloudinary(avatarLocalPath)
+    console.log("Avatar received from the cloudinary :: ",avatar)
     if(!avatar){
         throw new ApiError(500 , "Error While Uploading Avatar.")
     }
 
-    const user = User.findByIdAndUpdate(
-        req?.user._id,
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
         {
             $set : {
                 avatar : avatar.url
             }
         },
         {new : true}
-    ).select("-password ")
+    ).select("-password -refreshToken")
 
     res
     .status(200)
@@ -350,7 +349,7 @@ const updateUserCoverImage = asyncHandler(async (req, res)=>{
         throw new ApiError(500 , "Error While Uploading Avatar.")
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req?.user._id,
         {
             $set : {
