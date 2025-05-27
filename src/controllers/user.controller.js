@@ -357,7 +357,7 @@ const updateUserCoverImage = asyncHandler(async (req, res)=>{
             }
         },
         {new : true}
-    ).select("-password ")
+    ).select("-password -refreshtoken ")
 
     res
     .status(200)
