@@ -370,6 +370,67 @@ const updateUserCoverImage = asyncHandler(async (req, res)=>{
     )
 
 })
+
+const getUserChannel = asyncHandler(async (req,res)=>{
+    const username = req.params(username)
+    if(!username?.trim()){
+        throw new ApiError(400 , "Username Is Not Valid" )
+    }
+    const channel = await User.aggregate(
+        {
+            $match : {
+                username : username.toLowerCase()
+            }
+        },
+        {
+            $lookup : {
+                from : "subscriptions",
+                localField : "_id",
+                foreignField : "$channel",
+                as : "subscribers"
+            }
+        },
+        {
+            $lookup : {
+                from : "subscriptions",
+                localField : "_id",
+                foreignField : "$subscriber",
+                as : "channelSubscribedByUs"
+            }
+        },
+        {
+            $addFields : {
+                subscriberCount : {
+                    $size : "subscribers"
+                },
+                subscribedToCount : {
+                    $size : "channelSubscribedByUs"
+                },
+                isSubscribed : {
+                    $cond : {
+                        if : {
+                            $in : [req.user._id , "subscribers.subscriber"]
+                        },
+                        then : true,
+                        else : false,                        
+                    }
+                }
+            }
+        },
+        {
+            $project : {
+                username : 1 ,
+                fullname : 1 ,
+                email : 1 ,
+                coverImage : 1,
+                avatar : 1 ,
+                subscriberCount : 1 ,
+                subscribedToCount : 1,
+            }
+        }
+    )
+})
+
 export {
      registerUser,
      loginUser,
@@ -379,5 +440,7 @@ export {
      getCurrentUser,
      updateUserDetails,
      updateUserAvatar,
-     updateUserCoverImage
+     updateUserCoverImage,
+     getUserChannel,
+
     }
