@@ -228,4 +228,24 @@ backend with javascript.
  
 * Logout User :-
     1. For logging out the user we need to remove the tokens for the cookies (accessToken and refreshToken) and from the db (refreshtoken).
-    2. To remove the value to refreshToken in the db , we can use findByIdAndUpdate
+    2. To remove the value to refreshToken in the db , we can use `findByIdAndUpdate` function to find the user with the id taken from the req.user and updating the refreshToken to null.This will replace the value refreshToken in db to null.
+    3. To clear the value from the cookie , we will use `clearCookie`.
+    ```
+     res
+       .status(200)
+       .clearCookie("accessToken" ,options)
+       .clearCookie("refreshToken" , options)
+       .json(
+        new ApiResponse(
+            200,
+            "User Logout Successful."
+        )
+       )
+    ```
+
+* Regerenate Access Token  :-
+    1. This controller function handle the situation that in specific time if the user has logged once ,he/she doesn't have to login again and again. The controller will verify the user refreshToken from cookie and decode the token with the help sercret key, this will return user id which will find the user in db.
+    2.  after getting the user from db and cookie we will compare them ,and if match we will generate new accessToken and refreshToken using `generateRefreshTokenAndAccessToken`.
+    3.  Set the newly generated Token in cookie and response.
+ 
+  
