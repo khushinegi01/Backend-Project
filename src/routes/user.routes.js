@@ -1,7 +1,18 @@
-import { loginUser, logoutUser, registerUser ,refreshAccessToken ,changeCurrentPassword ,getCurrentUser, updateUserDetails, updateUserAvatar, updateUserCoverImage } from "../controllers/user.controller.js"
 import { Router } from "express"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
+import {
+     loginUser,
+     logoutUser, 
+     registerUser ,
+     refreshAccessToken ,
+     changeCurrentPassword ,
+     getCurrentUser, 
+     updateUserDetails, 
+     updateUserAvatar, 
+     updateUserCoverImage,
+     getUserChannel,
+} from "../controllers/user.controller.js"
 
 const routes = Router()
 
@@ -33,5 +44,7 @@ routes.route("/update-user-password").put(verifyJWT ,changeCurrentPassword)
 routes.route("/update-user-avatar").put(verifyJWT,upload.single("avatar"),updateUserAvatar)
 
 routes.route("/update-user-coverImage").put(verifyJWT,upload.single("coverImage"),updateUserCoverImage)
+
+routes.route("/user-channel").get(verifyJWT, getUserChannel)
 
 export default routes
