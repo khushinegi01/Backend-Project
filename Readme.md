@@ -179,9 +179,53 @@ backend with javascript.
   11. Send the response is user is created successfully through `ApiResponse`.
 
 * Login User:-
-    1. Get the credentials from the users.
-    2. Check if credentails is empty .
-    3. Check the password.
-    4. Check the credentials from mongo using User class.
-    5. Generate the tokens and save to db.
-    6. Error handling with ApiError and response through ApiResponse.
+    1. Get the credentials `{ username, email , password }` from the users from request body.
+    2. Check if credentails is empty, here we are checking both email and username as valid credentials for login.
+    3. If the username and email returns user from the db using findOne, we will go for the password verification , if not throw error that user doesn't exist.
+    4. The password is verified with the help of the method `isPasswordCorrect(password)` in the user modal.
+    5. This method uses bcrypt's compare function to compare the password provided in the parameter with the user password in stored in db.
+    6. If the `isPasswordCorrect` return false , throw error `Invalid Password`.
+    7. After successfully verifying the user , we need to generate the tokens `{accessToken , refreshToken}` for the valid user with the help of function created as `generateRefreshTokenAndAccessToken()` which takes user._id as parameter.
+    ```
+          const generateRefreshTokenAndAccessToken = async function(userId){
+              try {
+                  const user = await User.findById(userId)
+                  const accessToken = await user.generateAccessToken() // called the method from the user model
+                  const refreshToken = await user.generateRefreshToken() // called the method from the user model
+                 user.refreshToken = refreshToken;
+                 await user.save({ validateBeforeSave: false });
+                 return {accessToken , refreshToken}
+              }
+              catch(error) {
+                  throw new ApiError(500 , "Something Went Wrong in Logging In User :: ")
+              }
+          
+          }
+    ```
+    8. Now that the user token are created the successfully , we need to call the db function findOne again to remove the password and the other unnesscerary fields from the user. There is also another way to do so if db call is expensive , i.e. edit the user from before. 
+    ```
+          const loggedUser = await User.findById(user._id).select(
+          "-password -refreshToken"
+          )
+    ```
+    9. After filtering the user data , now let set tokens in the cookies and return the `loggedUser` in the response along with 200 response status.
+    ```
+      res
+       .status(200)
+       .cookie("accessToken" , accessToken , options)
+       .cookie("refreshToken" , refreshToken , options)
+       .json(
+        new ApiResponse(
+            200,
+            {
+                accessToken ,refreshToken , loggedUser
+            },
+            "User Logged In Successful."
+        )
+       )
+    ```
+    10. Error handling with ApiError and response through ApiResponse , options in cookies set the cookie in httpOnly and secure.
+ 
+* Logout User :-
+    1. For logging out the user we need to remove the tokens for the cookies (accessToken and refreshToken) and from the db (refreshtoken).
+    2. To remove the value to refreshToken in the db , we can use findByIdAndUpdate
