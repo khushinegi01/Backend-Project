@@ -2,106 +2,103 @@
 
 backend with javascript.
 
-## Here's the algo for the whole project - **youtubeClone**
+## Here's the Flow for the whole project - **youtubeClone**
 
   This is the clone for youtube with the following functionalities : 
 
   ### - **User Functionality**
   
   * **User Registration & Login**
-  
-    * Sign up with email and password
-    * Login with authentication
-    * Token-based session management (`refreshToken`)
+    - Sign up with email and password
+    - Login with authentication
+    - Token-based session management (`refreshToken`)
+      
   * **Profile Management**
-  
-    * Edit username, full name, avatar, cover image
-    * View other users’ profiles
-  
+    - Edit username, full name, avatar, cover image
+    - View other users’ profiles
   
   ### - **Video Functionality**
   
   * **Video Upload**
-  
-    * Upload a video file with title, description, thumbnail
-    * Set video as published/unpublished
+    - Upload a video file with title, description, thumbnail
+    - Set video as published/unpublished
+      
   * **Video Viewing**
-  
-    * Play videos
-    * View video details: title, description, views, duration
-    * View published videos only
+    - Play videos
+    - View video details: title, description, views, duration
+    - View published videos only
+      
   * **Watch History**
-  
-    * Track recently watched videos
+    - Track recently watched videos
+      
   * **Video Search & Filtering**
-  
-    * Search by title, owner, or tags (tags not present, but can be added later)
+    - Search by title, owner, or tags (tags not present, but can be added later)
   
   ### - **Comment Functionality**
   
   * **Add Comments**
-  
-    * Users can comment on videos
+    - Users can comment on videos
+      
   * **Edit/Delete Comments**
-  
-    * Only the comment owner can update/delete
+    - Only the comment owner can update/delete
+   
   * **View Comments**
-  
-    * Show list of comments under each video
+    - Show list of comments under each video
   
   ### - **Like System**
   
   * **Like Videos, Comments, and Tweets**
-  
-    * Like functionality is polymorphic (`video`, `comment`, `tweet`)
+    - Like functionality is polymorphic (`video`, `comment`, `tweet`)
+      
   * **View Like Counts**
-  
-    * Count likes on each item
+    - Count likes on each item
+      
   * **Unlike**
-  
-    * Toggle like status
+    - Toggle like status
   
   ### - **Playlist Functionality**
   
   * **Create Playlists**
-  
-    * Add name, description
+    - Add name, description
+      
   * **Add/Remove Videos from Playlist**
+    
   * **View Playlist**
-  
-    * Show videos in a playlist
+    - Show videos in a playlist
+      
   * **Edit/Delete Playlist**
   
   ### - **Subscription System**
   
   * **Subscribe to Channels**
-  
-    * Users can subscribe to other users (channels)
+    - Users can subscribe to other users (channels)
+      
   * **Unsubscribe**
+    
   * **View Subscriptions**
-  
-    * List of subscribed channels
+    - List of subscribed channels
+      
   * **Subscriber Count**
   
   ### - **Tweet/Micro-post Functionality**
   
   * **Post Tweets**
-  
-    * Users can create short content posts (like YouTube community posts)
+    - Users can create short content posts (like YouTube community posts)
+      
   * **Edit/Delete Tweets**
+
   * **Comment and Like Tweets**
   
   ### - **Analytics & Engagement**
   
   * **Video Views**
-  
-    * Track view count
+    - Track view count
+      
   * **Video Duration**
-  
-    * Show length of video
+    - Show length of video
+      
   * **User Engagement**
-  
-    * Comments, likes, and watch history
+    - Comments, likes, and watch history
 
 ---
 
@@ -248,4 +245,9 @@ backend with javascript.
     2.  after getting the user from db and cookie we will compare them ,and if match we will generate new accessToken and refreshToken using `generateRefreshTokenAndAccessToken`.
     3.  Set the newly generated Token in cookie and response.
  
-  
+* Change User Password :-
+    1. This controller help the user to change their password.
+    2. Get the current password and new password from the req.body.
+    3. Get the user information from the db through req.user._id.
+    4. Now validate the current password field send by user with the password from the user info through method `isPasswordCorrect`.
+    5.  
