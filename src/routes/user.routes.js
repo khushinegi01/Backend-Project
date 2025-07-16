@@ -12,6 +12,7 @@ import {
      updateUserAvatar, 
      updateUserCoverImage,
      getUserChannel,
+     getWatchHistory,
 } from "../controllers/user.controller.js"
 
 const routes = Router()
@@ -37,14 +38,15 @@ routes.route("/refresh-token").post(refreshAccessToken)
 
 routes.route("/getUser").get(verifyJWT ,getCurrentUser)
 
-routes.route("/update-user-details").put(verifyJWT ,updateUserDetails)
+routes.route("/update-user-details").patch(verifyJWT ,updateUserDetails)
 
-routes.route("/update-user-password").put(verifyJWT ,changeCurrentPassword)
+routes.route("/update-user-password").patch(verifyJWT ,changeCurrentPassword)
 
-routes.route("/update-user-avatar").put(verifyJWT,upload.single("avatar"),updateUserAvatar)
+routes.route("/update-user-avatar").patch(verifyJWT,upload.single("avatar"),updateUserAvatar)
 
-routes.route("/update-user-coverImage").put(verifyJWT,upload.single("coverImage"),updateUserCoverImage)
+routes.route("/update-user-coverImage").patch(verifyJWT,upload.single("coverImage"),updateUserCoverImage)
 
-routes.route("/user-channel").get(verifyJWT, getUserChannel)
+routes.route("/user-channel/:username").get(verifyJWT, getUserChannel)
 
+routes.route("/user-watchHistory").get(verifyJWT, getWatchHistory)
 export default routes

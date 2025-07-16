@@ -1,6 +1,6 @@
 # start the backend journey in MERN. 
 
-backend with javascript.
+Backend with javascript.
 
 ## Here's the algo for the whole project - **youtubeClone**
 
