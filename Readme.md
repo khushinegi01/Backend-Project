@@ -140,6 +140,8 @@ Backend with javascript.
 ## **Controller Logic :**
 
 -**User Controller** :
+
+
 * Register User :-
   1. Get data fields (username , fullname , email , password , avatar , coverImage[optional] ) from the frontend in form-data.
   2. Validate the fields if any required field is empty. Used modern javascript function some() to check the data fields dynamically.
@@ -174,6 +176,8 @@ Backend with javascript.
   9. Check if the user is created in the db using `findById` and remove the fields like `password` and `-refreshToken`.
   10. Error handling is done in the standardized  manner using utils class like `ApiError`.
   11. Send the response is user is created successfully through `ApiResponse`.
+
+---
 
 * Login User:-
     1. Get the credentials `{ username, email , password }` from the users from request body.
@@ -223,6 +227,9 @@ Backend with javascript.
     ```
     10. Error handling with ApiError and response through ApiResponse , options in cookies set the cookie in httpOnly and secure.
  
+---
+
+
 * Logout User :-
     1. For logging out the user we need to remove the tokens for the cookies (accessToken and refreshToken) and from the db (refreshtoken).
     2. To remove the value to refreshToken in the db , we can use `findByIdAndUpdate` function to find the user with the id taken from the req.user and updating the refreshToken to null.This will replace the value refreshToken in db to null.
@@ -240,14 +247,72 @@ Backend with javascript.
        )
     ```
 
+---
+
+
 * Regerenate Access Token  :-
     1. This controller function handle the situation that in specific time if the user has logged once ,he/she doesn't have to login again and again. The controller will verify the user refreshToken from cookie and decode the token with the help sercret key, this will return user id which will find the user in db.
     2.  after getting the user from db and cookie we will compare them ,and if match we will generate new accessToken and refreshToken using `generateRefreshTokenAndAccessToken`.
     3.  Set the newly generated Token in cookie and response.
  
+---
+
+
 * Change User Password :-
     1. This controller help the user to change their password.
     2. Get the current password and new password from the req.body.
     3. Get the user information from the db through req.user._id.
     4. Now validate the current password field send by user with the password from the user info through method `isPasswordCorrect`.
-    5.  
+    5. Now , replace the password and save the password without validation before save set as false.
+
+
+---
+
+
+* Get Current User :-
+    1. Since the user already exist in the request body , we can get the user from `req.user` .
+    2. Send the response return as
+       ```javascript
+             return res.status(200)
+              .json(
+                  new ApiResponse(
+                      200 , 
+                      req.user,
+                      "Current User Fetched"
+                  )
+              )
+        ```
+
+---
+
+* Update User Details :-
+    1. Get the fields that are to be updated from the `req.body`.
+    2. Validate that the fields are provided otherwise send error message through ApiError class.
+    3. If the user exist use the mongoose function `findByIdAndUpdate` , this function finds the user on the basis of the mongo generated id with the help of `req.user._id` and uses set function to set the new values .
+    4. Use the `new : true` option which tells Mongoose to return the updated document, not the original.
+    5. We use .select("-password -refreshToken") to exclude sensitive information like the password and refresh token from the returned user object.
+    6. And then , send the response through the ApiResponse class , sending the status code along with the user object and fetched message .
+ 
+---
+
+
+* Update User Avatar :-
+    1. Get the avatarLocalPath from the req.file.path option provided by the multer middleware .
+    2. Check that the file path exit otherwise throw the error through the ApiError class.
+    3. By `uploadToCloudinary` function created in the `utils/cloudinary.js` file upload the file by sending the local path to the function , this will upload the image in the cloudinary server and will provide object containing the public url to fetch the file in `avatar` variable.
+    4. Check that avatar contains values , and if not throw error.
+    5. To set the avatar url in db , use the `findByIdAndUpdate` option to get the user with new updated avatar url and filter data removing the sensitive data like password and refreshToken.
+    6. And then , send the response through the ApiResponse class , sending the status code along with the user object and fetched message .
+
+---
+
+
+* Update User CoverImage :-
+     1. This function follows the similar step as update avatar .
+ 
+---
+
+ 
+* Get User Channel :-
+      1. Get the username from the url using `req.parmam.username`.
+      2. 
