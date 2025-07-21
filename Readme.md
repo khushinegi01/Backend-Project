@@ -314,5 +314,47 @@ Backend with javascript.
 
  
 * Get User Channel :-
-      1. Get the username from the url using `req.parmam.username`.
-      2. 
+     1. Get the username from the url using `req.parmam.username`.
+     2. Check that the username is provided through the url or throw error .
+     3. We use MongoDB's `aggregate()` method to perform complex queries and joins using `$lookup`:
+    
+       * $match: Find the user document whose `username` matches the lowercase of the provided username.
+       * $lookup (subscribers): Join with the `subscriptions` collection to find users who are subscribed to this channel.
+       * $lookup (channelSubscribedByUs): Join again to find the channels this user has subscribed to.
+    
+     4. After gathering subscriber and subscription data, we use `$addFields` to add extra fields to the result:
+    
+       * subscriberCount: Total number of subscribers ($size of subscribers array).
+       * subscribedToCount: Total number of channels this user has subscribed to.
+       * isSubscribed: A boolean that checks if the currently logged-in user (`req.user._id`) is in the list of subscribers.This is helpful to get the users is actually the subscriber of the channel or not. 
+    
+     5. The `$project` stage limits the returned fields to only necessary information:
+    
+       ```js
+       {
+           username,
+           fullname,
+           email,
+           coverImage,
+           avatar,
+           subscriberCount,
+           subscribedToCount,
+           isSubscribed
+       }
+       ```
+  
+    6. Check the if the channel contains any value or it fails the first condition using the : 
+ 
+      ```js
+       if(!channel?.length){
+        throw new ApiError(404 , "Channel Not Found! ")
+       }
+      ```
+   7. Send the channel in ApiResponse .
+
+* Get Watch History
+     1. We will be using the mongoDB's `aggregate()` method :
+
+       * $match: Find the user document whose `username` matches the lowercase of the provided username.
+       * $lookup (subscribers): Join with the `subscriptions` collection to find users who are subscribed to this channel.
+       * $lookup (channelSubscribedByUs): Join again to find the channels this user has subscribed to.
