@@ -259,7 +259,7 @@ const changeCurrentPassword = asyncHandler(async (req ,res)=>{
     )
 })
 
-// since the login user is aldready existing in the req object we can fetch that for there.
+// since the login user is already existing in the req object we can fetch that for there.
 const getCurrentUser = asyncHandler(async (req, res)=>{
     console.log("User :: ", req.user)
     return res.status(200)

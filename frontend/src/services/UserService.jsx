@@ -21,4 +21,25 @@ export const UserRegisterService = async(payload) =>{
     }
 }
 
+export const LoginUserService = async(payload)=>{
+    try {
+        const response = await fetch(`${URL}/login`,{
+            method : "POST",
+            headers : {
+                'Content-Type' : "application/json"
+            },
+            body : JSON.stringify(payload)
+        })
+        const result = await response.json()
+        if(!response.ok){
+            console.log("LoginUserService :: ", result.message )
+            throw new Error(result.message)
+        }
+        return result
+    } catch (error) {
+        console.log("LoginUserService :: ", error.message)
+        throw new Error(error)   
+    }
+}
+
 
