@@ -4,20 +4,22 @@ import './index.css';
 import RegisterUserPage from './pages/RegisterUserPage.jsx'
 import HomePage from './pages/HomePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import Layout from './components/Layout.jsx';
+import UserDashBoard from './pages/UserDashBoard.jsx';
 const router = createBrowserRouter([
   {
-    path : '/',
-    element : <HomePage/>
-  },
-  {
-    path : '/register',
-    element : <RegisterUserPage/>
-  },
-  {
-    path : '/login',
-    element : <LoginPage/>
+    path: "/",
+    element: <Layout />,   
+    children: [
+      { index: true, element: <HomePage /> }, 
+      { path: "register", element: <RegisterUserPage /> }, 
+      { path: "login", element: <LoginPage /> },
+      {
+        path : 'dashboard' , element : <UserDashBoard/>
+      }
+    ]
   }
-])
+]);
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router} />
 )

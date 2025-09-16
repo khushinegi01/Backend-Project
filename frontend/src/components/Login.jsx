@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import { LoginUserService } from '../services/UserService'
+import { useNavigate } from 'react-router-dom'
 function Login() {
-
+    const navigate = useNavigate()
     const [username , setUsername] = useState('')
     const [password , setPassword] = useState('')
     const [email , setEmail] = useState('')
     const handleLogin = async(e)=>{
         e.preventDefault()
+        
         console.log("Login :", {
             username,
             password,
             email
         })
         const payload = {username, password, email}
-        await LoginUserService(payload)
+        const result = await LoginUserService(payload)
+        console.log("login.jsx :: ", result)
+        if(result.success === true)
+        navigate('/dashboard')
     }
     return (
         <>

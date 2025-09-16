@@ -132,7 +132,9 @@ const loginUser = asyncHandler(async (req ,res)=>{
    // creating options for the cookies
    const options = {
         httpOnly : true,
-        secure : true
+        // secure : false, // secure : true ,cookie will only be saved if the request is over HTTPS.
+        // sameSite: "None" // if frontend and backend are on different ports
+        secure : true,
    }
 
    /* removed the password and refreshToken from the user data. This can be done in 2 ways:

@@ -28,13 +28,15 @@ export const LoginUserService = async(payload)=>{
             headers : {
                 'Content-Type' : "application/json"
             },
-            body : JSON.stringify(payload)
+            body : JSON.stringify(payload),
+            credentials: "include" 
         })
         const result = await response.json()
         if(!response.ok){
             console.log("LoginUserService :: ", result.message )
             throw new Error(result.message)
         }
+        console.log("Login :: ",result)
         return result
     } catch (error) {
         console.log("LoginUserService :: ", error.message)
