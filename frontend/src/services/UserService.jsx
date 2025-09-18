@@ -45,3 +45,21 @@ export const LoginUserService = async(payload)=>{
 }
 
 
+export const getUserProfile = async()=>{
+    try {
+        const response = await fetch(`${URL}/getUser`,{
+            method: "Get",
+            credentials : "include"
+        })
+        const result = await response.json()
+        if(!response.ok){
+            console.log("Get User :: ", result.message)
+            throw new Error(result.message)
+        }
+        console.log("Get User Profile :: ", result)
+        return result?.data
+    } catch (error) {
+        console.log("Get User Profile :: ", error.message)
+        throw new Error(error)
+    }
+}
