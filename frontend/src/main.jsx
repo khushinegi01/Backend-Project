@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import Layout from './components/Layout.jsx';
 import UserDashBoard from './pages/UserDashBoard.jsx';
+import ProfileUpdate from './components/Dashboard/ProfileUpdate.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,9 +15,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> }, 
       { path: "register", element: <RegisterUserPage /> }, 
       { path: "login", element: <LoginPage /> },
-      {
-        path : 'dashboard' , element : <UserDashBoard/>
-      }
+      { path : 'dashboard' , element : <UserDashBoard/> },
+      { path : 'profile' , element : <ProfileUpdate/>}
     ]
   }
 ]);

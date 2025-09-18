@@ -63,3 +63,22 @@ export const getUserProfile = async()=>{
         throw new Error(error)
     }
 }
+
+
+export const logoutUserService = async()=>{
+    try {
+        const response = await fetch(`${URL}/logout`,{
+            method : "POST",
+            credentials : 'include'
+        })
+        const result = await response.json()
+        if(!response.ok){
+            console.log("Logout User :: ", result)
+            throw new Error(result.message)
+        }
+        return result
+    } catch (error) {
+        console.log(error.message)
+        throw new Error(error.message)
+    }
+}
