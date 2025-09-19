@@ -1,26 +1,52 @@
 import React from 'react'
-
+import { useEffect } from 'react';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { getUserProfile } from '../../services/UserService';
 function ProfileUpdate() {
+    const navigate = useNavigate()
+    const [fullname ,setFullname] = useState('')
+    const [email , setEmail] = useState('')
+    const [user , setUser] = useState('');
+        useEffect(()=>{
+            const fetchUser = async () => {
+                try {
+                    const result = await getUserProfile();
+                    if (result) {
+                        console.log("result consist ::" , result)
+                        setUser(result);
+                        setEmail(result.email)
+                        setFullname(result.fullname)
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch user:", err.message);
+                }
+            };
+            fetchUser();
+        },[])
+    const handleProfileUpdate = ()=>{
+
+    }
     return (
          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
                     <div className='bg-[#0f0f0f] text-[#f1f1f1] border shadow-md shadow-white/20 border-white p-4 m-2 w-full max-w-md sm:max-w-lg rounded-2xl mt-5'>
                         <button
                             className="absolute top-4 right-4 text-gray-400 hover:text-white"
-                            onClick={() => setProfileClicked(false)}
+                            onClick={()=>navigate(-1)}
                         >
                             ✕
                         </button>
-                        <form className='space-y-2'  >
+                        <form className='space-y-2' onSubmit={handleProfileUpdate()}  >
 
                             <label className='block'>
-                                User Name
+                                Full Name
                             </label>
                             <input
                                 type="text"
                                 placeholder='Enter User Name'
                                 className='w-full outline-none focus:border focus:border-white rounded-xl p-2 bg-[#121212]'
-                                onChange={(e) => setUsername(e.target.value)}
-                                value={username}
+                                value={fullname}
+                                onChange={(e)=>setFullname(e.target.value)}
                             />
                             <label className='block'>
                                 Email
@@ -29,20 +55,9 @@ function ProfileUpdate() {
                                 type="email"
                                 placeholder='Enter Email'
                                 className='w-full outline-none focus:border focus:border-white rounded-xl p-2 bg-[#121212]'
-                                onChange={(e) => setEmail(e.target.value)}
                                 value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
                             />
-                            <label className='block'>
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                placeholder='Generate Password '
-                                className='w-full outline-none focus:border focus:border-white rounded-xl p-2 bg-[#121212]'
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-
                             <button className='w-full bg-amber-600 outline-none hover:bg-amber-400 hover:text-black transition duration-200 text-white p-2 rounded-xl mb-4 mt-4'>Update Profile</button>
                         </form>
                     </div>

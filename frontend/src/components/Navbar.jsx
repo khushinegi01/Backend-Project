@@ -5,9 +5,6 @@ function Navbar() {
     const navigate = useNavigate()
     const [islogged, setIslogged] = useState(true);
     const [profileClicked, setProfileClicked] = useState(false)
-    const [password, setPassword] = useState('')
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
     
     const handleLogout = async ()=>{
         const result = await logoutUserService()
