@@ -1,24 +1,35 @@
 import React, { useState } from 'react'
 import { LoginUserService } from '../services/UserService'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch , useSelector } from 'react-redux'
+import { setUser } from '../features/auth/authSlice'
 function Login() {
     const navigate = useNavigate()
     const [username , setUsername] = useState('')
     const [password , setPassword] = useState('')
     const [email , setEmail] = useState('')
+    const [error, setError] = useState("");
+    const dispatch = useDispatch()
     const handleLogin = async(e)=>{
         e.preventDefault()
-        
+        setError('')
         console.log("Login :", {
             username,
             password,
             email
         })
-        const payload = {username, password, email}
-        const result = await LoginUserService(payload)
-        console.log("login.jsx :: ", result)
-        if(result.success === true)
-        navigate('/dashboard')
+        try {
+            const payload = {username, password, email}
+            const result = await LoginUserService(payload)
+            if(result.success === true){
+                const user = result.data.loggedUser ;
+                dispatch(setUser(user))
+                navigate('/dashboard')
+            }
+        } catch (error) {
+            console.log("Error in Logging :: ", error)
+            setError(error)
+        }
     }
     return (
         <>
@@ -50,6 +61,7 @@ function Login() {
                         
                         onChange={(e)=>setPassword(e.target.value)}
                     />
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
                     <button className='w-full bg-amber-600 p-2 rounded-xl hover:bg-amber-500 mt-3'>Login</button>
                     </form>
                 </div>

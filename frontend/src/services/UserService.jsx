@@ -60,7 +60,7 @@ export const getUserProfile = async()=>{
         return result?.data
     } catch (error) {
         console.log("Get User Profile :: ", error.message)
-        throw new Error(error)
+        throw error
     }
 }
 

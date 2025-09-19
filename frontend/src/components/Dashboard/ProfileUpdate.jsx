@@ -2,21 +2,20 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { getUserProfile } from '../../services/UserService';
+import { useDispatch , useSelector } from 'react-redux';
 function ProfileUpdate() {
     const navigate = useNavigate()
     const [fullname ,setFullname] = useState('')
     const [email , setEmail] = useState('')
-    const [user , setUser] = useState('');
+    const dispatch = useDispatch()
+    const { user }= useSelector((state)=>state.auth)
         useEffect(()=>{
             const fetchUser = async () => {
                 try {
-                    const result = await getUserProfile();
-                    if (result) {
-                        console.log("result consist ::" , result)
-                        setUser(result);
-                        setEmail(result.email)
-                        setFullname(result.fullname)
+                    if (user) {
+                        console.log("result consist ::" , user)
+                        setEmail(user.email)
+                        setFullname(user.fullname)
                     }
                 } catch (err) {
                     console.error("Failed to fetch user:", err.message);
@@ -36,7 +35,7 @@ function ProfileUpdate() {
                         >
                             ✕
                         </button>
-                        <form className='space-y-2' onSubmit={handleProfileUpdate()}  >
+                        <form className='space-y-2' onSubmit={handleProfileUpdate}  >
 
                             <label className='block'>
                                 Full Name
