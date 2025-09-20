@@ -82,3 +82,26 @@ export const logoutUserService = async()=>{
         throw new Error(error.message)
     }
 }
+
+export const updateUserProfileService = async (payload)=>{
+    try {
+        const response = await fetch(`${URL}/update-user-details`, {
+            method : "PATCH",
+            credentials : 'include',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(payload)
+        })
+        const result = response.json()
+        if(!response.ok){
+            console.log('Error in Updating :: ', result.message)
+            throw new Error(result.message)
+        }
+        console.log("Update User Profile service :: ",result)
+        return result ;
+    } catch (error) {
+        console.log("Update User Profile service :: ", error)
+        throw error 
+    }
+}

@@ -2,6 +2,7 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import ReactDOM from "react-dom/client";
 import { Provider } from 'react-redux'
 import { store } from './store/store.js';
+import Toaster from './components/Toaster.jsx';
 import './index.css';
 import RegisterUserPage from './pages/RegisterUserPage.jsx'
 import HomePage from './pages/HomePage.jsx';
@@ -25,5 +26,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <RouterProvider router={router} />
+    <Toaster />
   </Provider>
+
 )
