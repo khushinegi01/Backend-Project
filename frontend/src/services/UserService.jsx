@@ -105,3 +105,25 @@ export const updateUserProfileService = async (payload)=>{
         throw error 
     }
 }
+
+export const changeUserPasswordService = async(payload)=>{
+    try {
+        const response = await fetch(`${URL}/update-user-password` , {
+            method : "PATCH",
+            credentials : 'include',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify(payload)
+        })
+        const result = await response.json()
+        if(!response.ok){
+            console.log("ChangeUserPasswordService :: ",result.message)
+            throw new Error(result.message)
+        }
+        console.result
+        return result ;
+    } catch (error) {
+        throw error
+    }
+}

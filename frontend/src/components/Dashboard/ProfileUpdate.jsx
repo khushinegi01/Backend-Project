@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfileService } from '../../services/UserService';
 import { setUser } from '../../features/auth/authSlice';
-
 import { toast } from "react-toastify";
 function ProfileUpdate() {
     const navigate = useNavigate()
@@ -42,7 +41,7 @@ function ProfileUpdate() {
             toast.success("User Profile is Updated")
             setTimeout(() => {
             navigate("/dashboard");
-            }, 1500);
+            }, 3000);
         }
         else {
             console.log("ProfileUpdate Error in update ")
@@ -84,7 +83,6 @@ function ProfileUpdate() {
                     <button className='w-full bg-amber-600 outline-none hover:bg-amber-400 hover:text-black transition duration-200 text-white p-2 rounded-xl mb-4 mt-4'>Update Profile</button>
                 </form>
             </div>
-                
         </div>
     )
 }

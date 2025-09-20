@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import Layout from './components/Layout.jsx';
 import UserDashBoard from './pages/UserDashBoard.jsx';
 import ProfileUpdate from './components/Dashboard/ProfileUpdate.jsx';
+import UserPassword from './components/Dashboard/UserPassword.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,7 +20,8 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterUserPage /> }, 
       { path: "login", element: <LoginPage /> },
       { path : 'dashboard' , element : <UserDashBoard/> },
-      { path : 'profile' , element : <ProfileUpdate/>}
+      { path : 'profile' , element : <ProfileUpdate/>},
+      { path : 'changeCurrentPassword' , element : <UserPassword/>}
     ]
   }
 ]);

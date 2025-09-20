@@ -39,11 +39,14 @@ function Navbar({
 
 
             {profileClicked &&
-                <div className='absolute bg-[#0f0f0f] text-[#f1f1f1] right-4 top-16 border border-white/20 shadow-lg rounded-xl w-40 z-50'>
+                <div className='absolute bg-[#0f0f0f] text-[#f1f1f1] right-4 top-16 border border-white/20 shadow-lg rounded-xl w-50 z-50'>
                     <ul className='flex flex-col'>
                         <li className='px-4 py-2 hover:bg-gray-800 cursor-pointer hover:rounded-xl'
                             onClick={() => navigate('/profile')}>
                             Profile
+                        </li>
+                        <li className='px-4 py-2 hover:bg-gray-800 cursor-pointer hover:rounded-xl' onClick={()=>navigate('/changeCurrentPassword')}>
+                            Change Password
                         </li>
                         <li className='px-4 py-2 hover:bg-gray-800 cursor-pointer hover:rounded-xl'
                             onClick={handleLogout}>
